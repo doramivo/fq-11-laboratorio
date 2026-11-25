@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório de aceleração e forças</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday learning: a physics lab bench for one 11th-grade student and his tutor
+   IDEA a school lab with four stations; every quantity keeps one colour (v blue, a orange, F red)
+   PICTURE live simulations: car on a road, ball thrown up, skaters pushing, book-table-Earth force pairs
+   COLOUR white ground, ink, blue velocity, orange acceleration, red force; scenes in asphalt, sky and ice
+   TYPE Outfit 600 for titles + Inter for text
+   LAYOUT each station: scene full width (or 60%) with readouts beside; phone stacks scene, readouts, controls */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#111418);--alt:light-dark(#f3f4f6,#181c22);--ink:light-dark(#15171c,#eceef2);--mute:light-dark(#5a606b,#a3a9b4);--line:light-dark(#d9dce1,#2c323b);--v:light-dark(#1f5fd6,#5b93ff);--a:light-dark(#e8600f,#ff8a3d);--f:light-dark(#d61f4b,#ff5a7d);--road:light-dark(#4a4f57,#2a2e34);--sky:light-dark(#e8f1fb,#16202c);--ice:light-dark(#dff1fb,#14232e);--grass:light-dark(#cfe3c4,#1b2a1d);--card:light-dark(#ffffff,#1c2027)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:16px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Outfit,Inter,sans-serif;font-weight:600;letter-spacing:-.02em;line-height:1.05;margin:0;text-wrap:balance}
+h1{font-size:clamp(32px,5vw,48px)}
+h2{font-size:clamp(26px,3.4vw,34px)}
+h3{font-size:19px}
+p{margin:.5em 0;max-width:68ch}
+.band{padding:clamp(28px,4vw,56px) max(5vw,16px)}
+.alt{background:var(--alt)}
+.wrap{max-width:1240px;margin:0 auto}
+.head{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px 48px;align-items:end}
+.code{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);font-weight:500}
+.chip svg{width:34px;height:14px}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+nav a{color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:15px;background:var(--card)}
+nav a:hover{border-color:var(--ink)}
+.st{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:24px;margin-top:20px;align-items:start}
+.st.half{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+.fig{position:relative;min-height:340px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--sky)}
+.fig.tall{min-height:440px}
+.fig>svg{position:absolute;inset:0;width:100%;height:100%;touch-action:manipulation}
+.side{display:grid;gap:14px}
+.read{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.read>div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.read b{display:block;font:600 22px/1.2 Outfit,Inter,sans-serif;white-space:nowrap;font-variant-numeric:tabular-nums}
+.read span{font-size:13px;color:var(--mute)}
+.read .wide{grid-column:1/-1}
+.cv{color:var(--v)}.ca{color:var(--a)}.cf{color:var(--f)}
+.state{font:600 24px/1.2 Outfit,Inter,sans-serif}
+.ctl{display:grid;gap:12px;margin-top:16px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font:500 15px Inter,sans-serif;min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--ink)}
+button:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--v);outline-offset:2px}
+button.go{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.sl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;align-items:center}
+.sl label{font-size:15px}
+.sl output{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.sl input{grid-column:1/-1}
+input[type=range]{width:100%;height:44px;accent-color:var(--ink);margin:0}
+.chk{display:flex;gap:10px;align-items:center;font-size:15px;min-height:44px}
+.chk input{width:20px;height:20px}
+.pred{border-left:4px solid var(--ink);background:var(--card);padding:12px 16px;border-radius:0 10px 10px 0}
+.pred p{margin:0}
+details{margin-top:8px}
+summary{cursor:pointer;font-weight:600;min-height:32px}
+.note{font-size:14px;color:var(--mute)}
+.fb{min-height:1.5em;font-weight:600}
+svg text{font:13px Inter,sans-serif;fill:var(--ink);paint-order:stroke;stroke:var(--sky);stroke-width:4px;stroke-linejoin:round}
+svg .lab{font-weight:600;font-size:14px}
+.sv{stroke:var(--v)}.svf{fill:var(--v)}.sa{stroke:var(--a)}.saf{fill:var(--a)}.sf{stroke:var(--f)}.sff{fill:var(--f)}
+.sg{stroke:var(--mute)}.sgf{fill:var(--mute)}
+.tv{fill:var(--v)!important}.ta{fill:var(--a)!important}.tf{fill:var(--f)!important}
+.ro{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:20px}
+.ro div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.ro>div>b{display:block;font:600 26px/1 Outfit,sans-serif;white-space:nowrap}
+.ro p{font-size:15px;margin:.4em 0 0}
+@media(max-width:900px){.st,.st.half,.head{grid-template-columns:minmax(0,1fr)}.ro{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.ro{grid-template-columns:minmax(0,1fr)}.read b{font-size:19px}}
+@media(max-width:600px){.ctl .read{grid-template-columns:minmax(0,1fr)!important}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="band">
+ <div class="wrap head">
+  <div>
+   <h1>Aceleração e 3.ª Lei de Newton, no laboratório</h1>
+   <p>Quatro estações para mexer, prever e confirmar. Em cada uma: o aluno prevê primeiro, depois carrega no botão e explica o que viu.</p>
+   <nav><a href="#carro">1. Carro na estrada</a><a href="#bola">2. Bola lançada</a><a href="#patins">3. Patinadores</a><a href="#pares">4. Pares de forças</a><a href="#roteiro">Roteiro da sessão</a><a href="exercicios.html">Exercícios interativos →</a></nav>
+  </div>
+  <div class="code" aria-label="Código de cores">
+   <div class="chip"><svg viewBox="0 0 34 14"><line x1="2" y1="7" x2="24" y2="7" class="sv" stroke-width="4" stroke-linecap="round"/><polygon class="svf" points="33,7 23,1.5 23,12.5"/></svg>Velocidade v</div>
+   <div class="chip"><svg viewBox="0 0 34 14"><line x1="2" y1="7" x2="24" y2="7" class="sa" stroke-width="4" stroke-linecap="round"/><polygon class="saf" points="33,7 23,1.5 23,12.5"/></svg>Aceleração a</div>
+   <div class="chip"><svg viewBox="0 0 34 14"><line x1="2" y1="7" x2="24" y2="7" class="sf" stroke-width="4" stroke-linecap="round"/><polygon class="sff" points="33,7 23,1.5 23,12.5"/></svg>Força F</div>
+  </div>
+ </div>
+</header>
+
+<section class="band alt" id="carro">
+ <div class="wrap">
+  <h2>1. Carro na estrada: acelerado ou retardado?</h2>
+  <p>As silhuetas claras mostram onde o carro estava a cada 0,5 s. Se ficam cada vez mais afastadas, a rapidez aumenta; se ficam mais juntas, diminui.</p>
+  <div class="st">
+   <div>
+    <div class="fig" id="carFig"><svg id="carSvg" role="img" aria-label="Carro numa estrada com vetores velocidade e aceleração"></svg></div>
+    <div class="ctl">
+     <div class="row" id="carPre"></div>
+     <div class="read" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+      <div class="sl" style="background:none;border:0;padding:0"><label for="v0">Velocidade inicial v₀</label><output id="v0o"></output><input type="range" id="v0" min="-20" max="20" step="1"></div>
+      <div class="sl" style="background:none;border:0;padding:0"><label for="ac">Aceleração a</label><output id="aco"></output><input type="range" id="ac" min="-5" max="5" step="0.5"></div>
+     </div>
+     <div class="row"><button class="go" id="carGo">Arrancar</button><button id="carReset">Repor</button><label class="chk"><input type="checkbox" id="stop0" checked>O carro para quando v = 0</label></div>
+    </div>
+   </div>
+   <div class="side">
+    <div class="read">
+     <div><span>Tempo</span><b id="cT"></b></div>
+     <div><span>Posição</span><b id="cX"></b></div>
+     <div><span>Velocidade</span><b class="cv" id="cV"></b></div>
+     <div><span>Aceleração</span><b class="ca" id="cA"></b></div>
+     <div class="wide"><span>Movimento</span><div class="state" id="cS"></div><div class="note" id="cWhy"></div></div>
+    </div>
+    <div class="pred"><p><b>Prevê primeiro:</b> no exemplo «Marcha-atrás a travar», a aceleração é positiva. O carro está a acelerar ou a travar?</p>
+     <details><summary>Ver resposta</summary><p>Está a travar. v aponta para a esquerda (negativa) e a para a direita (positiva): sentidos opostos dão movimento retardado. O sinal de a, sozinho, não chega.</p></details></div>
+    <p class="note">Escolhe-se o sentido positivo para a direita. Δv por cada segundo = a.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="band" id="bola">
+ <div class="wrap">
+  <h2>2. Bola lançada para cima: a aceleração nunca muda</h2>
+  <p>Enquanto sobe, a seta azul encolhe; no topo desaparece; ao descer cresce para baixo. A seta laranja fica sempre igual: 10 m/s², para baixo.</p>
+  <div class="st half">
+   <div class="fig tall" id="ballFig"><svg id="ballSvg" role="img" aria-label="Bola lançada verticalmente com vetores velocidade e aceleração"></svg></div>
+   <div class="side">
+    <div class="read">
+     <div><span>Tempo</span><b id="bT"></b></div>
+     <div><span>Altura</span><b id="bH"></b></div>
+     <div><span>Velocidade (eixo para cima)</span><b class="cv" id="bV"></b></div>
+     <div><span>Aceleração</span><b class="ca">−10 m/s²</b></div>
+    </div>
+    <div class="sl"><label for="bv0">Velocidade de lançamento</label><output id="bv0o"></output><input type="range" id="bv0" min="5" max="25" step="1"></div>
+    <div class="row"><button class="go" id="bGo">Lançar</button><button id="bPause">Pausa</button><button id="bTop">Ir para o ponto mais alto</button></div>
+    <div class="pred"><p><b>Prevê primeiro:</b> no ponto mais alto, qual é a velocidade? E a aceleração?</p>
+     <details><summary>Ver resposta</summary><p>v = 0, mas a = 10 m/s² para baixo. Se a fosse 0 no topo, a bola ficava lá parada para sempre.</p></details></div>
+    <p class="note">Sem resistência do ar, g ≈ 10 m/s². Silhuetas a cada 0,2 s: à esquerda a subir, à direita a descer.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="band alt" id="patins">
+ <div class="wrap">
+  <h2>3. Patinadores no gelo: a mesma força, efeitos diferentes</h2>
+  <p>A empurra B. As duas setas vermelhas têm sempre o mesmo comprimento (3.ª Lei). As setas laranja mostram que acelera mais quem tem menos massa (a = F / m).</p>
+  <div class="st">
+   <div>
+    <div class="fig" id="skFig" style="background:var(--ice)"><svg id="skSvg" role="img" aria-label="Dois patinadores a empurrar-se, com forças e acelerações"></svg></div>
+    <div class="ctl">
+     <div class="row" id="skPre"></div>
+     <div class="read" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+      <div class="sl" style="background:none;border:0;padding:0"><label for="mA">Massa de A</label><output id="mAo"></output><input type="range" id="mA" min="20" max="100" step="5"></div>
+      <div class="sl" style="background:none;border:0;padding:0"><label for="mB">Massa de B</label><output id="mBo"></output><input type="range" id="mB" min="20" max="100" step="5"></div>
+      <div class="sl" style="background:none;border:0;padding:0"><label for="fF">Força do empurrão</label><output id="fFo"></output><input type="range" id="fF" min="40" max="300" step="10"></div>
+     </div>
+     <div class="row"><button class="go" id="skGo">Empurrar</button><button id="skReset">Repor</button></div>
+    </div>
+   </div>
+   <div class="side">
+    <div class="read">
+     <div><span>Força em A (de B)</span><b class="cf" id="sFA"></b></div>
+     <div><span>Força em B (de A)</span><b class="cf" id="sFB"></b></div>
+     <div><span>Aceleração de A</span><b class="ca" id="sAA"></b></div>
+     <div><span>Aceleração de B</span><b class="ca" id="sAB"></b></div>
+     <div><span>Velocidade de A depois</span><b class="cv" id="sVA"></b></div>
+     <div><span>Velocidade de B depois</span><b class="cv" id="sVB"></b></div>
+    </div>
+    <div class="pred"><p><b>Prevê primeiro:</b> com A = 90 kg e B = 30 kg, quem faz mais força?</p>
+     <details><summary>Ver resposta</summary><p>Nenhum: as forças têm a mesma intensidade. B, com um terço da massa, fica com o triplo da aceleração.</p></details></div>
+    <p class="note">O empurrão dura 0,4 s; depois, sem atrito, cada um segue com velocidade constante.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="band" id="pares">
+ <div class="wrap">
+  <h2>4. Livro na mesa: encontra o par de cada força</h2>
+  <p>Toca numa seta (ou num botão) para ver o seu par ação-reação. Os corpos estão afastados para se ver em qual atua cada força.</p>
+  <div class="st half">
+   <div class="fig tall" id="prFig"><svg id="prSvg" role="img" aria-label="Livro, mesa e Terra com quatro forças"></svg></div>
+   <div class="side">
+    <div class="row" id="prBtns"></div>
+    <div class="pred" id="prTxt"><p>Escolhe uma força.</p></div>
+    <div class="pred"><p><b>Pergunta de teste:</b> o peso do livro e a normal formam um par ação-reação?</p>
+     <div class="row" style="margin-top:8px"><button id="qSim">Sim</button><button id="qNao">Não</button></div>
+     <p class="fb" id="qFb" aria-live="polite"></p></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="band alt" id="roteiro">
+ <div class="wrap">
+  <h2>Roteiro da sessão (1 h)</h2>
+  <p>Em cada estação: o aluno prevê em voz alta, carrega no botão, e explica a diferença entre o que previu e o que viu.</p>
+  <div class="ro">
+   <div><b>15 min</b><p><b>Carro.</b> Corre os quatro exemplos por ordem. No último, pede-lhe que diga «acelerado» ou «retardado» antes de arrancar.</p></div>
+   <div><b>10 min</b><p><b>Bola.</b> Pausa no topo com «Ir para o ponto mais alto» e pergunta pelas duas setas. Muda a velocidade de lançamento: o tempo de subida é v₀ / 10.</p></div>
+   <div><b>15 min</b><p><b>Patinadores.</b> Experimenta «Mesma massa» e depois «Adulto e criança». Pede o cálculo de a = F / m antes de mostrar os números.</p></div>
+   <div><b>20 min</b><p><b>Pares.</b> Encontrar o par das quatro forças e responder à pergunta de teste. Depois, a página de <a href="exercicios.html">exercícios interativos</a>.</p></div>
+  </div>
+ </div>
+</section>
+
+<script>
+{
+const $=id=>document.getElementById(id);
+const fmt=(n,d=1)=>{if(Math.abs(n)<0.5*10**-d)n=0;return n.toFixed(d).replace('.',',').replace('-','−')};
+const arr=(x1,y1,x2,y2,c,w=4)=>{const dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy);if(L<3)return'';const ux=dx/L,uy=dy/L,h=Math.min(13,L*.7),bx=x2-ux*h,by=y2-uy*h,k=h*.55;return`<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" class="${c}" stroke-width="${w}" stroke-linecap="round"/><polygon class="${c}f" points="${x2},${y2} ${bx-uy*k},${by+ux*k} ${bx+uy*k},${by-ux*k}"/>`};
+const sims=[];
+let last=null;
+const loop=ts=>{const dt=last==null?0:Math.min(.05,(ts-last)/1000);last=ts;let any=false;for(const s of sims){if(s.run){s.step(dt);any=true}}if(any)requestAnimationFrame(loop);else last=null};
+const kick=()=>{if(last==null)requestAnimationFrame(loop)};
+const watch=(el,fn)=>{const ro=new ResizeObserver(fn);ro.observe(el);return ro};
+
+/* ---------- 1. Carro ---------- */
+const car={v0:0,a:2.8,t:0,run:false};
+const presets=[['Arranque',0,3],['Travagem',20,-5],['Velocidade constante',8,0],['Marcha-atrás a travar',-10,2]];
+const cs=$('carSvg');
+const tStop=()=>($('stop0').checked&&car.v0*car.a<0)?-car.v0/car.a:Infinity;
+const x0=()=>(car.v0>0||(car.v0==0&&car.a>=0))?8:92;
+const cx=t=>{const te=Math.min(t,tStop());return x0()+car.v0*te+.5*car.a*te*te};
+const cv=t=>t>=tStop()?0:car.v0+car.a*t;
+const ca=t=>t>=tStop()?0:car.a;
+const carShape=(px,y,dir,cls)=>{const s=dir<0?-1:1;return`<g transform="translate(${px},${y}) scale(${s},1)" class="${cls}"><path d="M-24,-6 L-24,6 L24,6 L24,-2 L14,-6 L8,-16 L-12,-16 L-18,-6 Z"/><path d="M-9,-14 L5,-14 L10,-7 L-9,-7 Z" class="win"/><circle cx="-13" cy="7" r="5.5" class="wh"/><circle cx="13" cy="7" r="5.5" class="wh"/></g>`};
+const drawCar=()=>{
+ const W=cs.clientWidth,H=cs.clientHeight;if(!W)return;
+ const m=26,s=(W-2*m)/100,X=x=>m+x*s,roadY=H*.62,rh=46,cy=roadY-4;
+ const t=car.t,x=cx(t),v=cv(t),a=ca(t);
+ const Kv=Math.min(5.5,W/130),Ka=Kv*3.2;
+ let g=`<rect x="0" y="${roadY-rh/2-10}" width="${W}" height="${H}" style="fill:var(--grass)"/><rect x="0" y="${roadY-rh/2}" width="${W}" height="${rh}" style="fill:var(--road)"/><line x1="0" y1="${roadY}" x2="${W}" y2="${roadY}" stroke="#fff" stroke-opacity=".7" stroke-width="2" stroke-dasharray="14 12"/>`;
+ const step=W<520?20:10;
+ for(let d=0;d<=100;d+=step){g+=`<line x1="${X(d)}" y1="${roadY+rh/2}" x2="${X(d)}" y2="${roadY+rh/2+8}" class="sg" stroke-width="1.5"/><text x="${X(d)}" y="${roadY+rh/2+24}" text-anchor="middle" style="stroke:var(--grass)">${d}${d==0?' m':''}</text>`}
+ for(let k=0;k*.5<t-1e-9;k++){const tk=k*.5,xk=cx(tk);if(xk<-3||xk>103)continue;g+=carShape(X(xk),cy,cv(tk)||car.a||1,'ghost')}
+ if(x>=-5&&x<=105)g+=carShape(X(x),cy,v||car.a||1,'car');
+ const px=Math.max(m,Math.min(W-m,X(x))),yv=roadY-rh/2-34,ya=yv-34;
+ if(Math.abs(v)>.05){g+=arr(px,yv,px+v*Kv,yv,'sv',5)+`<text class="lab tv" x="${px+v*Kv+(v>0?8:-8)}" y="${yv+5}" text-anchor="${v>0?'start':'end'}">v</text>`}else g+=`<text class="lab tv" x="${px}" y="${yv+5}" text-anchor="middle">v = 0</text>`;
+ if(Math.abs(a)>.01){g+=arr(px,ya,px+a*Ka,ya,'sa',5)+`<text class="lab ta" x="${px+a*Ka+(a>0?8:-8)}" y="${ya+5}" text-anchor="${a>0?'start':'end'}">a</text>`}else g+=`<text class="lab ta" x="${px}" y="${ya+5}" text-anchor="middle">a = 0</text>`;
+ g+=arr(m,24,m+46,24,'sg',2)+`<text x="${m+54}" y="28">sentido positivo</text>`;
+ cs.innerHTML=g;
+ $('cT').textContent=fmt(t)+' s';$('cX').textContent=fmt(x)+' m';$('cV').textContent=fmt(v)+' m/s';$('cA').textContent=fmt(a)+' m/s²';
+ let st,why;
+ if(Math.abs(a)<.01&&Math.abs(v)<.05){st='Repouso';why='Sem velocidade e sem aceleração.'}
+ else if(Math.abs(a)<.01){st='Uniforme';why='a = 0: a velocidade não muda.'}
+ else if(Math.abs(v)<.05){st='A arrancar';why='v = 0 neste instante, mas a ≠ 0: a velocidade vai mudar.'}
+ else if(v*a>0){st='Acelerado';why='v e a no mesmo sentido: a rapidez aumenta '+fmt(Math.abs(a))+' m/s em cada segundo.'}
+ else{st='Retardado';why='v e a em sentidos opostos: a rapidez diminui '+fmt(Math.abs(a))+' m/s em cada segundo.'}
+ $('cS').textContent=st;$('cWhy').textContent=why;
+};
+const carSync=()=>{car.v0=+$('v0').value;car.a=+$('ac').value;$('v0o').textContent=fmt(car.v0,0)+' m/s';$('aco').textContent=fmt(car.a)+' m/s²';car.t=0;car.run=false;$('carGo').textContent='Arrancar';for(const b of $('carPre').children)b.classList.toggle('on',+b.dataset.v==car.v0&&+b.dataset.a==car.a);drawCar()};
+$('carPre').innerHTML=presets.map(p=>`<button data-v="${p[1]}" data-a="${p[2]}">${p[0]}</button>`).join('');
+$('carPre').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$('v0').value=b.dataset.v;$('ac').value=b.dataset.a;carSync()});
+car.step=dt=>{car.t+=dt;const x=cx(car.t);if(x<-6||x>106||car.t>14||(car.t>tStop()+1.2)){car.run=false;$('carGo').textContent='Arrancar'}drawCar()};
+sims.push(car);
+$('carGo').addEventListener('click',()=>{if(car.run){car.run=false;$('carGo').textContent='Continuar';return}const x=cx(car.t);if(x<-6||x>106||car.t>14||car.t>tStop()+1.2)car.t=0;car.run=true;$('carGo').textContent='Pausa';kick()});
+$('carReset').addEventListener('click',carSync);
+$('v0').addEventListener('input',carSync);$('ac').addEventListener('input',carSync);$('stop0').addEventListener('change',carSync);
+$('v0').value=0;$('ac').value=3;
+watch(cs,drawCar);
+
+/* ---------- 2. Bola ---------- */
+const ball={v0:15,t:0,run:false};
+const bs=$('ballSvg');
+const by=t=>Math.max(0,ball.v0*t-5*t*t),bvel=t=>ball.v0-10*t,tEnd=()=>ball.v0/5;
+const drawBall=()=>{
+ const W=bs.clientWidth,H=bs.clientHeight;if(!W)return;
+ const gy=H-34,top=26,s=(gy-top)/32,Y=h=>gy-h*s,cx0=Math.min(W*.5,W-150),r=11;
+ const t=ball.t,h=by(t),v=bvel(t),K=Math.min(4.2,(gy-top)/70);
+ let g=`<rect x="0" y="${gy}" width="${W}" height="${H-gy}" style="fill:var(--grass)"/>`;
+ for(let d=0;d<=30;d+=5){g+=`<line x1="44" y1="${Y(d)}" x2="${W-12}" y2="${Y(d)}" class="sg" stroke-opacity=".25"/><text x="38" y="${Y(d)+4}" text-anchor="end">${d}${d==30?' m':''}</text>`}
+ const hm=ball.v0**2/20;
+ g+=`<line x1="44" y1="${Y(hm)}" x2="${W-12}" y2="${Y(hm)}" class="sg" stroke-dasharray="4 5"/><text x="${W-14}" y="${Y(hm)-6}" text-anchor="end">altura máxima ${fmt(hm)} m</text>`;
+ for(let k=0;k*.2<t-1e-9&&k*.2<=tEnd();k++){const tk=k*.2,up=bvel(tk)>=0;g+=`<circle cx="${cx0+(up?-20:20)}" cy="${Y(by(tk))-r}" r="${r-2}" class="sg sgf" fill-opacity=".18" stroke-opacity=".35"/>`}
+ const yb=Y(h)-r;
+ g+=`<circle cx="${cx0}" cy="${yb}" r="${r}" style="fill:var(--ink)"/>`;
+ if(Math.abs(v)>.15){g+=arr(cx0+28,yb,cx0+28,yb-v*K,'sv',5)+`<text class="lab tv" x="${cx0+38}" y="${yb-v*K/2+4}">v</text>`}else g+=`<text class="lab tv" x="${cx0+28}" y="${yb+4}">v = 0</text>`;
+ g+=arr(cx0+64,yb,cx0+64,yb+10*K,'sa',5)+`<text class="lab ta" x="${cx0+74}" y="${yb+5*K+4}">a = g</text>`;
+ if(Math.abs(v)<.4&&t>0)g+=`<text class="lab" x="${cx0-22}" y="${yb-22}" text-anchor="end">ponto mais alto</text>`;
+ bs.innerHTML=g;
+ $('bT').textContent=fmt(t,2)+' s';$('bH').textContent=fmt(h)+' m';$('bV').textContent=fmt(v)+' m/s';
+};
+const bSync=()=>{ball.v0=+$('bv0').value;$('bv0o').textContent=ball.v0+' m/s';ball.t=0;ball.run=false;$('bPause').textContent='Pausa';drawBall()};
+ball.step=dt=>{ball.t=Math.min(tEnd(),ball.t+dt);if(ball.t>=tEnd())ball.run=false;drawBall()};
+sims.push(ball);
+$('bGo').addEventListener('click',()=>{ball.t=0;ball.run=true;$('bPause').textContent='Pausa';kick()});
+$('bPause').addEventListener('click',()=>{if(ball.run){ball.run=false;$('bPause').textContent='Continuar'}else if(ball.t<tEnd()){ball.run=true;$('bPause').textContent='Pausa';kick()}});
+$('bTop').addEventListener('click',()=>{ball.run=false;ball.t=ball.v0/10;$('bPause').textContent='Continuar';drawBall()});
+$('bv0').addEventListener('input',bSync);
+$('bv0').value=15;
+watch(bs,drawBall);
+
+/* ---------- 3. Patinadores ---------- */
+const sk={mA:60,mB:40,F:120,t:0,run:false},Tp=.4;
+const ss=$('skSvg');
+const skPre=[['Mesma massa',60,60,120],['Adulto e criança',90,30,180],['Quase iguais',60,40,120]];
+const sx=(m,t)=>{const a=sk.F/m;if(t<=Tp)return .5*a*t*t;return .5*a*Tp*Tp+a*Tp*(t-Tp)};
+const person=(px,base,m,lab,dir)=>{const hr=7+m/14,bh=30+m*.55,bw=14+m*.22;return`<ellipse cx="${px}" cy="${base+3}" rx="${bw*.9}" ry="5" style="fill:var(--mute)" opacity=".25"/><line x1="${px-bw*.3}" y1="${base}" x2="${px-bw*.3}" y2="${base-bh*.35}" style="stroke:var(--ink)" stroke-width="5" stroke-linecap="round"/><line x1="${px+bw*.3}" y1="${base}" x2="${px+bw*.3}" y2="${base-bh*.35}" style="stroke:var(--ink)" stroke-width="5" stroke-linecap="round"/><rect x="${px-bw/2}" y="${base-bh}" width="${bw}" height="${bh*.68}" rx="${bw/2.4}" style="fill:var(--ink)"/><line x1="${px}" y1="${base-bh*.8}" x2="${px+dir*(bw/2+14)}" y2="${base-bh*.72}" style="stroke:var(--ink)" stroke-width="5" stroke-linecap="round"/><circle cx="${px}" cy="${base-bh-hr-2}" r="${hr}" style="fill:var(--ink)"/><text class="lab" x="${px}" y="${base+24}" text-anchor="middle" style="stroke:var(--ice)">${lab}</text>`};
+const drawSk=()=>{
+ const W=ss.clientWidth,H=ss.clientHeight;if(!W)return;
+ const s=W/12,mid=W/2,base=H-64,t=sk.t;
+ const aA=sk.F/sk.mA,aB=sk.F/sk.mB,pushing=t<=Tp;
+ const gap=(14+Math.max(sk.mA,sk.mB)*.22)/2+18;
+ const xA=mid-gap-sx(sk.mA,t)*s,xB=mid+gap+sx(sk.mB,t)*s;
+ let g=`<line x1="0" y1="${base+4}" x2="${W}" y2="${base+4}" style="stroke:var(--line)" stroke-width="2"/>`;
+ g+=person(xA,base,sk.mA,'A · '+sk.mA+' kg',1)+person(xB,base,sk.mB,'B · '+sk.mB+' kg',-1);
+ const Kf=Math.min(.32,W/2600),Ka=Math.min(9,W/90),hy=base-(30+Math.max(sk.mA,sk.mB)*.55)*.75;
+ const fo=pushing?1:.3;
+ g+=`<g opacity="${fo}">`+arr(xB,hy,xB+sk.F*Kf,hy,'sf',5)+`<text class="lab tf" x="${xB+sk.F*Kf+6}" y="${hy-8}" style="stroke:var(--ice)">F(A→B)</text>`+arr(xA,hy,xA-sk.F*Kf,hy,'sf',5)+`<text class="lab tf" x="${xA-sk.F*Kf-6}" y="${hy-8}" text-anchor="end" style="stroke:var(--ice)">F(B→A)</text></g>`;
+ const ay=34;
+ if(pushing){g+=arr(xA,ay,xA-aA*Ka,ay,'sa',5)+`<text class="lab ta" x="${xA-aA*Ka-6}" y="${ay+5}" text-anchor="end" style="stroke:var(--ice)">a</text>`+arr(xB,ay,xB+aB*Ka,ay,'sa',5)+`<text class="lab ta" x="${xB+aB*Ka+6}" y="${ay+5}" style="stroke:var(--ice)">a</text>`}
+ else{const Kv=Ka*2.5,vA=aA*Tp,vB=aB*Tp;g+=arr(xA,ay,xA-vA*Kv,ay,'sv',5)+`<text class="lab tv" x="${xA-vA*Kv-6}" y="${ay+5}" text-anchor="end" style="stroke:var(--ice)">v</text>`+arr(xB,ay,xB+vB*Kv,ay,'sv',5)+`<text class="lab tv" x="${xB+vB*Kv+6}" y="${ay+5}" style="stroke:var(--ice)">v</text>`}
+ g+=`<text x="${W/2}" y="${H-12}" text-anchor="middle" style="stroke:var(--ice)">${t==0?'Prontos: as setas vermelhas são as forças durante o empurrão':pushing?'Durante o empurrão: forças iguais e opostas':'Depois do empurrão: sem força, velocidade constante'}</text>`;
+ ss.innerHTML=g;
+ $('sFA').textContent=sk.F+' N';$('sFB').textContent=sk.F+' N';$('sAA').textContent=fmt(aA)+' m/s²';$('sAB').textContent=fmt(aB)+' m/s²';$('sVA').textContent=fmt(aA*Tp)+' m/s';$('sVB').textContent=fmt(aB*Tp)+' m/s';
+};
+const skSync=()=>{sk.mA=+$('mA').value;sk.mB=+$('mB').value;sk.F=+$('fF').value;$('mAo').textContent=sk.mA+' kg';$('mBo').textContent=sk.mB+' kg';$('fFo').textContent=sk.F+' N';sk.t=0;sk.run=false;for(const b of $('skPre').children)b.classList.toggle('on',+b.dataset.a==sk.mA&&+b.dataset.b==sk.mB&&+b.dataset.f==sk.F);drawSk()};
+$('skPre').innerHTML=skPre.map(p=>`<button data-a="${p[1]}" data-b="${p[2]}" data-f="${p[3]}">${p[0]}</button>`).join('');
+$('skPre').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$('mA').value=b.dataset.a;$('mB').value=b.dataset.b;$('fF').value=b.dataset.f;skSync()});
+sk.step=dt=>{sk.t+=dt*(sk.t<Tp?.35:1);const W=ss.clientWidth/12;if(sk.t>6||sx(Math.min(sk.mA,sk.mB),sk.t)*W>ss.clientWidth/2)sk.run=false;drawSk()};
+sims.push(sk);
+$('skGo').addEventListener('click',()=>{sk.t=0.0001;sk.run=true;kick()});
+$('skReset').addEventListener('click',skSync);
+for(const id of['mA','mB','fF'])$(id).addEventListener('input',skSync);
+$('mA').value=60;$('mB').value=40;$('fF').value=120;
+watch(ss,drawSk);
+
+/* ---------- 4. Pares ---------- */
+const forces={
+ P:{n:'Peso P',on:'livro',by:'Terra',pair:'T',txt:'A Terra puxa o livro para baixo. Atua no livro.'},
+ N:{n:'Normal N',on:'livro',by:'mesa',pair:'M',txt:'A mesa empurra o livro para cima. Atua no livro.'},
+ M:{n:'F livro→mesa',on:'mesa',by:'livro',pair:'N',txt:'O livro comprime a mesa para baixo. Atua na mesa.'},
+ T:{n:'F livro→Terra',on:'Terra',by:'livro',pair:'P',txt:'O livro puxa a Terra para cima. Atua na Terra (no seu centro).'}
+};
+let sel=null;
+const ps=$('prSvg');
+const drawPr=()=>{
+ const W=ps.clientWidth,H=ps.clientHeight;if(!W)return;
+ const cx0=W/2,bookY=H*.22,bh=26,bw=Math.min(150,W*.36),tableY=bookY+bh/2+80,tw=Math.min(300,W*.75),earthY=H-70,dx=Math.min(40,bw*.28);
+ let g=`<path d="M0,${earthY} Q${W/2},${earthY-40} ${W},${earthY} L${W},${H} L0,${H} Z" style="fill:var(--grass)"/><text class="lab" x="16" y="${H-16}" style="stroke:var(--grass)">Terra</text>`;
+ g+=`<rect x="${cx0-tw/2}" y="${tableY}" width="${tw}" height="14" rx="3" style="fill:var(--road)"/><rect x="${cx0-tw/2+16}" y="${tableY+14}" width="12" height="${earthY-34-tableY}" style="fill:var(--road)"/><rect x="${cx0+tw/2-28}" y="${tableY+14}" width="12" height="${earthY-34-tableY}" style="fill:var(--road)"/><text class="lab" x="${cx0-tw/2-8}" y="${tableY+12}" text-anchor="end">Mesa</text>`;
+ g+=`<rect x="${cx0-bw/2}" y="${bookY-bh/2}" width="${bw}" height="${bh}" rx="3" style="fill:var(--v)" fill-opacity=".25" stroke="currentColor"/><text class="lab" x="${cx0-bw/2-8}" y="${bookY+5}" text-anchor="end">Livro</text>`;
+ const geo={P:[cx0-dx,bookY,cx0-dx,bookY+62,'end',-1],N:[cx0+dx,bookY+bh/2,cx0+dx,bookY+bh/2-62,'start',1],M:[cx0+dx,tableY,cx0+dx,tableY+62,'start',1],T:[cx0-dx,earthY-6,cx0-dx,earthY-68,'end',-1]};
+ for(const k in geo){const[x1,y1,x2,y2,anc,sd]=geo[k],f=forces[k],hot=sel&&(k==sel||k==forces[sel].pair),dim=sel&&!hot;
+  g+=`<g data-k="${k}" style="cursor:pointer" opacity="${dim?.3:1}"><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="transparent" stroke-width="26"/>${arr(x1,y1,x2,y2,hot||!sel?'sf':'sg',hot?6:4)}<text class="lab ${hot||!sel?'tf':''}" x="${x2+sd*10}" y="${(y1+y2)/2+5}" text-anchor="${anc}">${f.n}</text></g>`}
+ ps.innerHTML=g;
+};
+const pick=k=>{sel=k;const f=forces[k],p=forces[f.pair];
+ $('prTxt').innerHTML=`<p><b class="cf">${f.n}</b>: ${f.txt}</p><p><b>O seu par é ${p.n}.</b> ${p.txt}</p><p class="note">Mesma intensidade, mesma direção, sentidos opostos e corpos diferentes (${f.on} e ${p.on}).</p>`;
+ for(const b of $('prBtns').children)b.classList.toggle('on',b.dataset.k==k||b.dataset.k==f.pair);drawPr()};
+$('prBtns').innerHTML=Object.keys(forces).map(k=>`<button data-k="${k}">${forces[k].n}</button>`).join('');
+$('prBtns').addEventListener('click',e=>{const b=e.target.closest('button');if(b)pick(b.dataset.k)});
+ps.addEventListener('click',e=>{const g=e.target.closest('[data-k]');if(g)pick(g.dataset.k)});
+$('qSim').addEventListener('click',()=>{$('qFb').textContent='Não. P e N atuam no mesmo corpo (o livro) e são de naturezas diferentes. Toca em P para ver o seu par verdadeiro.';$('qFb').className='fb cf'});
+$('qNao').addEventListener('click',()=>{$('qFb').textContent='Certo. Atuam ambas no livro; anulam-se porque o livro está em repouso, não por causa da 3.ª Lei.';$('qFb').className='fb cv'});
+watch(ps,drawPr);
+
+carSync();bSync();skSync();
+}
+</script>
+<style>
+.car path{fill:var(--v)}.car .win{fill:var(--sky)}.car .wh{fill:#1b1d21}
+.ghost path,.ghost .wh{fill:#fff;fill-opacity:.28}.ghost .win{fill:none}
+</style>
+</body>
+</html>

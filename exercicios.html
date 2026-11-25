@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exercícios de aceleração e forças</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday learning: practice sheet that marks itself
+   IDEA a lab worksheet where every exercise can be redrawn with new numbers
+   PICTURE each card carries its own small diagram with the same colour code (v blue, a orange, F red)
+   COLOUR white ground, ink, blue, orange, red; right answers in the velocity blue, wrong in the force red
+   TYPE Outfit 600 + Inter
+   LAYOUT title and live score on top; cards in two columns, one on phones */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#111418);--alt:light-dark(#f3f4f6,#181c22);--ink:light-dark(#15171c,#eceef2);--mute:light-dark(#5a606b,#a3a9b4);--line:light-dark(#d9dce1,#2c323b);--v:light-dark(#1f5fd6,#5b93ff);--a:light-dark(#e8600f,#ff8a3d);--f:light-dark(#d61f4b,#ff5a7d);--ok:light-dark(#1f5fd6,#5b93ff);--road:light-dark(#4a4f57,#3a3f47);--sky:light-dark(#e8f1fb,#16202c);--grass:light-dark(#cfe3c4,#1b2a1d);--card:light-dark(#ffffff,#1c2027)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--alt);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Outfit,Inter,sans-serif;font-weight:600;letter-spacing:-.02em;line-height:1.1;margin:0;text-wrap:balance}
+h1{font-size:clamp(30px,4.6vw,46px)}
+h3{font-size:19px}
+p{margin:.5em 0}
+.band{padding:clamp(24px,4vw,48px) max(5vw,16px)}
+.top{background:var(--bg);border-bottom:1px solid var(--line)}
+.wrap{max-width:1240px;margin:0 auto}
+.head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px 40px;align-items:end}
+.score{display:flex;gap:10px;flex-wrap:wrap}
+.score div{background:var(--alt);border:1px solid var(--line);border-radius:12px;padding:10px 16px;min-width:120px}
+.score b{display:block;font:600 30px/1.1 Outfit,sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap}
+.score span{font-size:13px;color:var(--mute)}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+nav a,.lnk{color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:15px;background:var(--card)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.card.ok{border-color:var(--ok);box-shadow:inset 0 0 0 1px var(--ok)}
+.card.bad{border-color:var(--f)}
+.tag{font-size:13px;color:var(--mute)}
+.q{font-size:17px}
+.fig svg{width:100%;height:auto;display:block;border-radius:10px;background:var(--sky)}
+.ans{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ans input{font:16px Inter,sans-serif;width:9em;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.unit{font-weight:500;white-space:nowrap}
+button{font:500 15px Inter,sans-serif;min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--ink)}
+button:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--v);outline-offset:2px}
+button.go{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.pick{border-color:var(--ok);box-shadow:inset 0 0 0 1px var(--ok)}
+button.wrong{border-color:var(--f);color:var(--f)}
+button:disabled{cursor:default}
+.mc{display:grid;gap:8px}
+.mc button{text-align:left;padding:10px 14px;line-height:1.35}
+.fb{font-weight:600;min-height:1.4em;margin:0}
+.fb.y{color:var(--ok)}.fb.n{color:var(--f)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:4px}
+details{border-top:1px solid var(--line);padding-top:8px}
+summary{cursor:pointer;font-weight:600;min-height:32px}
+.sol{background:var(--alt);border-radius:10px;padding:10px 14px;margin-top:6px}
+.sol p{margin:.3em 0}
+.f{font-weight:600;white-space:nowrap}
+.cv{color:var(--v)}.ca{color:var(--a)}.cf{color:var(--f)}
+svg text{font:13px Inter,sans-serif;fill:var(--ink)}
+svg .lab{font-weight:600;font-size:14px}
+.sv{stroke:var(--v)}.svf{fill:var(--v)}.sa{stroke:var(--a)}.saf{fill:var(--a)}.sf{stroke:var(--f)}.sff{fill:var(--f)}.sg{stroke:var(--mute)}.sgf{fill:var(--mute)}
+.tv{fill:var(--v)!important}.ta{fill:var(--a)!important}.tf{fill:var(--f)!important}
+.foot{color:var(--mute);font-size:14px;margin-top:18px}
+@media(max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}.head{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<header class="band top">
+ <div class="wrap head">
+  <div>
+   <h1>Exercícios de aceleração e 3.ª Lei de Newton</h1>
+   <p>Dez tipos de exercício que se corrigem sozinhos. «Novos números» gera outra versão do mesmo exercício, para treinar até sair certo.</p>
+   <nav><a href="index.html">← Laboratório interativo</a><a href="#" id="allNew">Gerar todos de novo</a></nav>
+  </div>
+  <div class="score" aria-live="polite">
+   <div><span>Certos à primeira</span><b id="sOk">0</b></div>
+   <div><span>Respondidos</span><b id="sDone">0</b></div>
+  </div>
+ </div>
+</header>
+<main class="band">
+ <div class="wrap grid" id="grid"></div>
+ <p class="wrap foot">Convenções: sentido positivo para a direita (ou para cima, nos lançamentos verticais); g = 10 m/s²; sem resistência do ar. Nas respostas numéricas podes usar vírgula.</p>
+</main>
+<script>
+{
+const R=(a,b,s=1)=>a+s*Math.floor(Math.random()*(Math.floor((b-a)/s)+1));
+const pickOne=l=>l[Math.floor(Math.random()*l.length)];
+const shuf=l=>{const c=l.slice();for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]]}return c};
+const fmt=(n,d=1)=>{const r=Math.round(n*10**d)/10**d;let s=Number.isInteger(r)?String(r):r.toFixed(d);return s.replace('.',',').replace('-','−')};
+const num=s=>parseFloat(String(s).trim().replace('−','-').replace('–','-').replace(',','.').replace(/\s/g,''));
+const arr=(x1,y1,x2,y2,c,w=4)=>{const dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy);if(L<3)return'';const ux=dx/L,uy=dy/L,h=Math.min(12,L*.7),bx=x2-ux*h,by=y2-uy*h,k=h*.55;return`<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" class="${c}" stroke-width="${w}" stroke-linecap="round"/><polygon class="${c}f" points="${x2},${y2} ${bx-uy*k},${by+ux*k} ${bx+uy*k},${by-ux*k}"/>`};
+const carG=(x,y,dir)=>`<g transform="translate(${x},${y}) scale(${dir<0?-1:1},1)"><path d="M-24,-6 L-24,6 L24,6 L24,-2 L14,-6 L8,-16 L-12,-16 L-18,-6 Z" style="fill:var(--v)"/><path d="M-9,-14 L5,-14 L10,-7 L-9,-7 Z" style="fill:var(--sky)"/><circle cx="-13" cy="7" r="5.5" fill="#1b1d21"/><circle cx="13" cy="7" r="5.5" fill="#1b1d21"/></g>`;
+const road=`<rect x="0" y="88" width="340" height="32" style="fill:var(--road)"/><line x1="0" y1="104" x2="340" y2="104" stroke="#fff" stroke-opacity=".6" stroke-width="2" stroke-dasharray="12 10"/>`;
+const svg=(h,body)=>`<svg viewBox="0 0 340 ${h}" role="img">${body}</svg>`;
+
+/* each generator returns {tag,q,fig?,type:'num'|'mc',ans,tol,unit,opts,sol,hint,after?} */
+const gens=[
+()=>{const v0=R(0,10),dt=R(2,6),a=R(1,4),v=v0+a*dt;return{tag:'Aceleração média',q:`Um ciclista, em linha reta, passa de <span class="f">${v0} m/s</span> para <span class="f">${v} m/s</span> em <span class="f">${dt} s</span>. Calcula a aceleração média.`,
+fig:svg(120,`${road.replace('y="88"','y="96"')}<text x="20" y="22">t = 0</text><text x="190" y="22">t = ${dt} s</text>${arr(20,44,20+v0*5,44,'sv',5)}<text class="lab tv" x="${26+v0*5}" y="49">v₀ = ${v0} m/s</text>${arr(190,74,190+v*3.4,74,'sv',5)}<text class="lab tv" x="190" y="62">v = ${v} m/s</text>`),
+type:'num',ans:a,tol:.01,unit:'m/s²',hint:'aₘ = Δv / Δt = (v − v₀) / Δt',sol:`<p>Δv = ${v} − ${v0} = ${v-v0} m/s</p><p>aₘ = ${v-v0} / ${dt} = <b>${fmt(a)} m/s²</b></p><p>A velocidade aumenta ${fmt(a)} m/s em cada segundo.</p>`}},
+()=>{const k=pickOne([36,54,72,90,108]),t=R(2,8),v=k/3.6,a=-v/t;return{tag:'Travagem com km/h',q:`Um carro segue a <span class="f">${k} km/h</span> e trava até parar em <span class="f">${t} s</span>. Calcula a aceleração média (com sinal; sentido positivo = sentido do movimento).`,
+fig:svg(120,`${road}${carG(70,98,1)}${arr(40,60,40+v*4,60,'sv',5)}<text class="lab tv" x="${46+v*4}" y="65">v = ${k} km/h</text><text x="330" y="28" text-anchor="end">parado ao fim de ${t} s</text>`),
+type:'num',ans:a,tol:.051,unit:'m/s²',hint:'Primeiro converte: km/h ÷ 3,6 = m/s. A velocidade final é 0.',sol:`<p>${k} km/h = ${k} / 3,6 = ${fmt(v)} m/s</p><p>aₘ = (0 − ${fmt(v)}) / ${t} = <b>${fmt(a,2)} m/s²</b></p><p>O sinal menos indica que a aceleração tem sentido oposto ao da velocidade: movimento retardado.</p>`}},
+()=>{const dir=pickOne([1,-1]),brake=pickOne([true,false]),aDir=brake?-dir:dir;return{tag:'Sentido do vetor aceleração',q:`Um carro desloca-se para a <b>${dir>0?'direita':'esquerda'}</b> e está a <b>${brake?'travar':'acelerar'}</b>. Para que lado aponta o vetor aceleração?`,
+fig:svg(130,`${road.replace('88','98').replace('104','114').replace('104','114')}${carG(170,108,dir)}${arr(170,56,170+dir*60,56,'sv',5)}<text class="lab tv" x="${170+dir*68}" y="61" text-anchor="${dir>0?'start':'end'}">v</text><g id="aSlot"></g>`),
+type:'mc',opts:[{t:'← Para a esquerda',ok:aDir<0},{t:'Para a direita →',ok:aDir>0}],fixed:true,
+after:c=>{c.querySelector('#aSlot').innerHTML=arr(170,30,170+aDir*50,30,'sa',5)+`<text class="lab ta" x="${170+aDir*58}" y="35" text-anchor="${aDir>0?'start':'end'}">a</text>`},
+hint:'A travar: a tem sentido oposto a v. A acelerar: o mesmo sentido.',sol:`<p>${brake?'A rapidez diminui, logo a aponta no sentido oposto ao da velocidade':'A rapidez aumenta, logo a aponta no mesmo sentido da velocidade'}: <b>para a ${aDir>0?'direita':'esquerda'}</b>.</p>`}},
+()=>{const v=pickOne([-1,1])*R(2,12),a=pickOne([-1,1])*R(1,4),acc=v*a>0;return{tag:'Acelerado ou retardado?',q:`Num certo instante, um corpo tem <span class="f cv">v = ${fmt(v)} m/s</span> e <span class="f ca">a = ${fmt(a)} m/s²</span>. Classifica o movimento.`,
+fig:svg(110,`<line x1="170" y1="10" x2="170" y2="100" class="sg" stroke-dasharray="3 4"/>${arr(170,40,170+v*9,40,'sv',5)}<text class="lab tv" x="${170+v*9+(v>0?8:-8)}" y="45" text-anchor="${v>0?'start':'end'}">v</text>${arr(170,76,170+a*20,76,'sa',5)}<text class="lab ta" x="${170+a*20+(a>0?8:-8)}" y="81" text-anchor="${a>0?'start':'end'}">a</text>`),
+type:'mc',opts:[{t:'Acelerado',ok:acc},{t:'Retardado',ok:!acc}],fixed:true,hint:'Olha para os sentidos das duas setas, não só para o sinal de a.',sol:`<p>v e a têm ${acc?'o mesmo sentido':'sentidos opostos'} (sinais ${acc?'iguais':'diferentes'}), por isso o movimento é <b>${acc?'acelerado':'retardado'}</b>.</p>`}},
+()=>{const v0=R(10,30,5),t=v0/10;return{tag:'Lançamento vertical',q:`Uma bola é lançada verticalmente para cima com <span class="f">${v0} m/s</span>. Quanto tempo demora a atingir o ponto mais alto?`,
+fig:svg(140,`<rect x="0" y="122" width="340" height="18" style="fill:var(--grass)"/><circle cx="150" cy="110" r="10" style="fill:var(--ink)"/>${arr(176,110,176,110-v0*2.6,'sv',5)}<text class="lab tv" x="186" y="${112-v0*1.3}">v₀ = ${v0} m/s</text>${arr(120,96,120,126,'sa',5)}<text class="lab ta" x="112" y="104" text-anchor="end">a = g</text><text x="150" y="20" text-anchor="middle">no topo: v = ?</text>`),
+type:'num',ans:t,tol:.01,unit:'s',hint:'A velocidade diminui 10 m/s em cada segundo, até chegar a 0.',sol:`<p>No ponto mais alto v = 0. Como a velocidade diminui 10 m/s por segundo:</p><p>t = ${v0} / 10 = <b>${fmt(t)} s</b></p>`}},
+()=>{const v0=R(10,25),t=R(1,3),v=v0-10*t;return{tag:'Velocidade num instante',q:`Uma pedra é lançada para cima com <span class="f">${v0} m/s</span> (eixo positivo para cima, g = 10 m/s²). Qual é a velocidade <span class="f">${t} s</span> depois? Indica o sinal.`,
+fig:svg(110,`<line x1="40" y1="96" x2="40" y2="14" class="sg" stroke-width="2"/><polygon class="sgf" points="40,8 35,18 45,18"/><text x="50" y="18">+</text>${arr(110,80,110,80-v0*2.4,'sv',5)}<text class="lab tv" x="120" y="${82-v0*1.2}">v₀</text>${arr(200,30,200,70,'sa',5)}<text class="lab ta" x="210" y="54">a = −10 m/s²</text>`),
+type:'num',ans:v,tol:.01,unit:'m/s',hint:'v = v₀ + a·t, com a = −10 m/s².',sol:`<p>v = ${v0} + (−10) × ${t} = <b>${fmt(v)} m/s</b></p><p>${v>0?'Positiva: a pedra ainda está a subir.':v<0?'Negativa: a pedra já está a descer.':'Nula: a pedra está no ponto mais alto.'}</p>`}},
+()=>{const mA=R(50,90,5),mB=R(25,60,5),F=R(60,240,20),aB=F/mB;return{tag:'3.ª Lei + a = F / m',q:`No gelo, a patinadora A (${mA} kg) empurra o patinador B (${mB} kg) com uma força de <span class="f cf">${F} N</span>. Qual é a aceleração de B durante o empurrão?`,
+fig:svg(136,`<circle cx="130" cy="${70-mA/6}" r="${6+mA/14}" style="fill:var(--ink)"/><rect x="${130-(8+mA/9)}" y="${70-mA/6+8}" width="${16+mA/4.5}" height="${30+mA/5}" rx="8" style="fill:var(--ink)"/><circle cx="210" cy="${70-mB/6}" r="${6+mB/14}" style="fill:var(--ink)"/><rect x="${210-(8+mB/9)}" y="${70-mB/6+8}" width="${16+mB/4.5}" height="${30+mB/5}" rx="8" style="fill:var(--ink)"/>${arr(222,62,222+F/4,62,'sf',4)}<text class="lab tf" x="${226+F/4}" y="58">F(A→B)</text>${arr(118,62,118-F/4,62,'sf',4)}<text class="lab tf" x="${114-F/4}" y="58" text-anchor="end">F(B→A)</text><text class="lab" x="130" y="130" text-anchor="middle">A</text><text class="lab" x="210" y="130" text-anchor="middle">B</text>`),
+type:'num',ans:aB,tol:.051,unit:'m/s²',hint:'A força que atua em B é a força que A exerce em B. Depois, a = F / m.',sol:`<p>A força que atua em B tem ${F} N (é a que A exerce em B).</p><p>a(B) = ${F} / ${mB} = <b>${fmt(aB,2)} m/s²</b></p><p>A também sofre ${F} N (3.ª Lei), mas acelera menos: ${F} / ${mA} = ${fmt(F/mA,2)} m/s².</p>`}},
+()=>{const s=pickOne([
+ ['Um nadador empurra a água para trás.','A água empurra o nadador para a frente.',['O peso do nadador.','A água empurra o nadador para trás.','Não há reação, porque a água é um líquido.']],
+ ['A Terra atrai a Lua.','A Lua atrai a Terra.',['A Lua atrai o Sol.','O peso da Lua.','A Terra repele a Lua.']],
+ ['Um martelo bate num prego.','O prego exerce uma força no martelo, em sentido oposto.',['A madeira empurra o prego.','O peso do martelo.','A mão empurra o martelo.']],
+ ['Um foguetão empurra os gases para baixo.','Os gases empurram o foguetão para cima.',['O ar empurra os gases para cima.','O peso do foguetão.','A Terra puxa os gases para baixo.']],
+ ['O pé de um corredor empurra o chão para trás.','O chão empurra o pé para a frente.',['O chão empurra o pé para cima (normal).','O peso do corredor.','O ar empurra o corredor para trás.']],
+ ['A Terra puxa uma maçã para baixo (peso da maçã).','A maçã puxa a Terra para cima.',['O ramo puxa a maçã para cima.','A normal que a mão exerce na maçã.','O ar empurra a maçã para cima.']]]);
+ return{tag:'Encontra o par ação-reação',q:`<b>Ação:</b> ${s[0]} Qual é a reação?`,type:'mc',opts:shuf([{t:s[1],ok:true},...s[2].map(t=>({t,ok:false}))]),hint:'A reação atua no outro corpo da interação: troca o «quem» com o «em quem».',sol:`<p><b>${s[1]}</b></p><p>As duas forças atuam em corpos diferentes, têm a mesma intensidade, a mesma direção e sentidos opostos.</p>`}},
+()=>{const s=pickOne([
+ ['As forças de um par ação-reação anulam-se.',false,'Atuam em corpos diferentes, por isso nunca se somam nem se anulam.'],
+ ['O peso de um livro e a normal que a mesa lhe exerce formam um par ação-reação.',false,'Atuam no mesmo corpo (o livro). O par do peso é a força do livro sobre a Terra.'],
+ ['Num choque entre um camião e um carro, o camião exerce mais força.',false,'As forças são iguais (3.ª Lei); o carro sofre maior aceleração porque tem menos massa.'],
+ ['No ponto mais alto de um lançamento vertical, a aceleração é nula.',false,'A velocidade é nula, mas a aceleração continua a ser g, para baixo.'],
+ ['Uma aceleração negativa significa sempre que o corpo está a travar.',false,'Depende do sentido da velocidade: se v também for negativa, o movimento é acelerado.'],
+ ['Se a velocidade e a aceleração têm sentidos opostos, o movimento é retardado.',true,'Sentidos opostos fazem a rapidez diminuir.'],
+ ['As forças de um par ação-reação atuam em corpos diferentes.',true,'É a característica que distingue estes pares.'],
+ ['Um carro que faz uma curva com rapidez constante tem aceleração.',true,'A direção da velocidade muda, logo o vetor velocidade varia.'],
+ ['Uma aceleração de 3 m/s² num movimento acelerado faz a velocidade aumentar 3 m/s em cada segundo.',true,'É o significado da unidade m/s².'],
+ ['A mesma força produz menor aceleração num corpo de maior massa.',true,'a = F / m: com mais massa, a aceleração é menor.']]);
+ return{tag:'Verdadeiro ou falso',q:`«${s[0]}»`,type:'mc',fixed:true,opts:[{t:'Verdadeiro',ok:s[1]},{t:'Falso',ok:!s[1]}],hint:'Pensa num exemplo concreto antes de responder.',sol:`<p><b>${s[1]?'Verdadeiro':'Falso'}.</b> ${s[2]}</p>`}},
+()=>{const mT=R(8,15)*1000,mC=R(9,15)*100,F=R(20,60)*1000;return{tag:'Choque camião-carro',q:`Um camião (${mT.toLocaleString('pt-PT')} kg) choca com um carro (${mC.toLocaleString('pt-PT')} kg). Durante o choque, o carro exerce no camião uma força de ${(F/1000)} kN. Qual das afirmações é correta?`,
+fig:svg(110,`${road.replace('y="88"','y="82"').replace('y1="104" x2="340" y2="104"','y1="98" x2="340" y2="98"')}<rect x="40" y="38" width="120" height="48" rx="4" style="fill:var(--ink)"/><rect x="160" y="52" width="30" height="34" rx="4" style="fill:var(--ink)"/>${carG(222,82,-1)}${arr(195,40,165,40,'sf',4)}<text class="lab tf" x="150" y="32" text-anchor="end">F(carro→camião)</text>${arr(205,40,235,40,'sf',4)}<text class="lab tf" x="240" y="32">?</text>`),
+type:'mc',opts:shuf([{t:`O camião exerce ${F/1000} kN no carro, e o carro sofre maior aceleração.`,ok:true},{t:`O camião exerce mais de ${F/1000} kN no carro, porque tem mais massa.`,ok:false},{t:`O camião exerce ${F/1000} kN no carro, e os dois sofrem a mesma aceleração.`,ok:false},{t:`O camião exerce menos de ${F/1000} kN no carro, porque está a travar.`,ok:false}]),hint:'Primeiro a 3.ª Lei (forças), depois a = F / m (efeitos).',sol:`<p>Pela 3.ª Lei, o camião exerce no carro <b>${F/1000} kN</b>, em sentido oposto.</p><p>a(carro) = ${F} / ${mC} = ${fmt(F/mC)} m/s²; a(camião) = ${F} / ${mT} = ${fmt(F/mT,2)} m/s². O carro acelera muito mais.</p>`}}
+];
+
+const grid=document.getElementById('grid');
+const stats=gens.map(()=>({done:false,first:null}));
+const upd=()=>{document.getElementById('sOk').textContent=stats.filter(s=>s.first===true).length+' / '+gens.length;document.getElementById('sDone').textContent=stats.filter(s=>s.done).length+' / '+gens.length};
+const render=i=>{
+ const e=gens[i](),c=document.createElement('article');c.className='card';c.id='ex'+(i+1);
+ stats[i]={done:false,first:null};
+ let ans='';
+ if(e.type==='num')ans=`<form class="ans"><label class="sr" for="in${i}" style="position:absolute;left:-9999px">Resposta</label><input id="in${i}" inputmode="decimal" autocomplete="off" placeholder="resposta"><span class="unit">${e.unit}</span><button class="go">Verificar</button></form>`;
+ else ans=`<div class="mc">${(e.fixed?e.opts:e.opts).map((o,k)=>`<button data-k="${k}">${o.t}</button>`).join('')}</div>`;
+ c.innerHTML=`<div class="tag">Exercício ${i+1} · ${e.tag}</div><div class="q">${e.q}</div>${e.fig?`<div class="fig">${e.fig}</div>`:''}${ans}<p class="fb" aria-live="polite"></p><details><summary>Dica</summary><p>${e.hint}</p></details><details class="sd"><summary>Ver resolução</summary><div class="sol">${e.sol}</div></details><div class="bar"><button class="nw">Novos números</button></div>`;
+ const fb=c.querySelector('.fb');
+ const mark=ok=>{const s=stats[i];if(s.first===null)s.first=ok;if(ok){s.done=true;c.classList.add('ok');c.classList.remove('bad');fb.textContent='Certo!';fb.className='fb y';if(e.after)e.after(c)}else{c.classList.add('bad');fb.textContent='Ainda não. Tenta outra vez ou abre a dica.';fb.className='fb n'}upd()};
+ if(e.type==='num'){c.querySelector('form').addEventListener('submit',ev=>{ev.preventDefault();const x=num(c.querySelector('input').value);if(isNaN(x)){fb.textContent='Escreve um número.';fb.className='fb n';return}mark(Math.abs(x-e.ans)<=e.tol)})}
+ else{c.querySelector('.mc').addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b||b.disabled)return;const o=e.opts[+b.dataset.k];if(o.ok){b.classList.add('pick');for(const x of c.querySelectorAll('.mc button'))x.disabled=true}else{b.classList.add('wrong');b.disabled=true}mark(o.ok)})}
+ c.querySelector('.sd').addEventListener('toggle',ev=>{if(ev.target.open&&stats[i].first===null){stats[i].first=false;upd()}});
+ c.querySelector('.nw').addEventListener('click',()=>{const n=render(i);c.replaceWith(n);upd()});
+ return c};
+const all=()=>{grid.innerHTML='';gens.forEach((_,i)=>grid.appendChild(render(i)));upd()};
+document.getElementById('allNew').addEventListener('click',ev=>{ev.preventDefault();all()});
+all();
+}
+</script>
+</body>
+</html>
